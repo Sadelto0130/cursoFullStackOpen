@@ -1,4 +1,3 @@
-```markdown
 # 0.4 Nueva nota en la versión clásica
 ```mermaid
 sequenceDiagram
@@ -35,8 +34,8 @@ sequenceDiagram
     deactivate server
 
     Note right of browser: Browser reloads or re-fetches JSON to display updated notes
-
 ```
+---
 # 0.5 Aplicación de una sola página (SPA) - al cargar
 ```mermaid
 sequenceDiagram
