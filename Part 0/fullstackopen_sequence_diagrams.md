@@ -1,4 +1,3 @@
----
 # 0.4 Nueva nota en la versión clásica
 ```mermaid
 sequenceDiagram
