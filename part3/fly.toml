@@ -1,15 +1,15 @@
-# fly.toml app configuration file generated for cursofullstackopen on 2025-11-04T13:03:02Z
+# fly.toml app configuration file generated for cursofullstackopen on 2025-11-04T13:53:19Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'cursofullstackopen'
-primary_region = 'ams'
+primary_region = 'gru'
 
 [build]
 
 [http_service]
-  internal_port = 8080
+  internal_port = 3000
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
