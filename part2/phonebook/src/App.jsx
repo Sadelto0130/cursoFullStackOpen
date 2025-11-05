@@ -47,8 +47,8 @@ const App = () => {
           })
           .catch(error => {
             console.log("Error updating person:", error)
-            setErrorMessage(`Information of ${newName} has already been removed from server`);
-            setPersons(persons.filter((p) => p.id !== existingPerson.id));
+            setErrorMessage(`Information of ${newName} not update`);
+            setPersons(persons.filter((p) => p.id !== existPerson.id));
           })
       }
       return   
