@@ -33,9 +33,9 @@ app.get('/api/persons/:id', (req, resp, next) => {
   Phonebook.findById(id)
     .then(person => { 
       if (person) {
-        response.json(person)
+        resp.json(person)
       } else {
-        response.status(404).end()
+        resp.status(404).end()
       }})
     .catch(err => next(err))
 })
@@ -52,12 +52,6 @@ app.delete('/api/persons/:id', (req, resp, next) => {
 app.post('/api/persons', (req, resp) => {
   const {name, number} = req.body
 
-  if (!name || !number) {
-    return resp.status(400).json({ 
-      error: 'data missing' 
-    })
-  }
-
   Phonebook.findOne({name})
     .then(existName => {
       if(existName) {
@@ -72,35 +66,39 @@ app.post('/api/persons', (req, resp) => {
       })
     
       person.save().then(savePerson => {
-        resp.json(person)
+        resp.json(savePerson)
       })
     })
 
 })
 
 app.get('/info', (req, resp) => {
-  const infoPhone = persons.length
   const date = new Date()
-  
-  resp.send(`
-    <p>Phonebook has info for ${infoPhone} people</p>
-    <p>${date}</p>
-  `)
+  Phonebook.countDocuments({})
+    .then(count => {resp.send(`
+      <p>Phonebook has info for ${count} people</p>
+      <p>${date}</p>
+    `)})
+    .catch(err => {
+      console.error('Error counting documents:', err)
+      resp.status(500).json({ error: 'Error counting documents' })
+    })
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   const body = req.body
 
-  if(!body.name || !body.number) {
-    return res.json({message: "Data missed"})
-  }
   const person = {
     name: body.name,
     number: body.number
   }
 
-  Phonebook.findByIdAndUpdate(id, person, {new: true})
+  Phonebook.findByIdAndUpdate(
+    id, 
+    person, 
+    {new: true, runValidators: true, context: 'query'}
+  )
     .then(updatePerson => {
       res.json(updatePerson)
     })
@@ -113,7 +111,9 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({error: error.message})
+  }
   next(error)
 }
 app.use(errorHandler)
