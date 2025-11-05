@@ -42,12 +42,12 @@ const App = () => {
         axios
           .updatePerson(existPerson.id, updatePerson)
           .then((returnPerson) => {
-            setPersons(persons.map(p=> p.id !== person.id ? p : returnPerson));
+            setPersons(persons.map(p=> p.id !== existPerson.id ? p : returnPerson));
             setSuccessMessage(`Updated ${newName}`)
           })
           .catch(error => {
             console.log("Error updating person:", error)
-            setErrorMessage(`Information of ${newName} not update`);
+            setErrorMessage(error.response.data.error);
             setPersons(persons.filter((p) => p.id !== existPerson.id));
           })
       }
