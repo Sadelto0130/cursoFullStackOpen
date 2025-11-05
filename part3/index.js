@@ -5,18 +5,14 @@ import 'dotenv/config'
 import './mongo.js'
 import {Phonebook} from './models/persons.js';
 
-
 const app = express()
+
 app.use(cors())
+app.use(express.json());
 app.use(express.static('dist'))
 
 morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms :body'));
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-app.use(unknownEndpoint)
 
 app.get('/', (req, resp) => {
   resp.send('<h1>Hello World</h1>')
@@ -105,7 +101,11 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.use(express.json());
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
@@ -117,6 +117,7 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 app.use(errorHandler)
+
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
