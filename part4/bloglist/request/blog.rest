@@ -1,0 +1,26 @@
+POST  http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Arya",
+  "author": "Victor",
+  "url": "www.victor.com",
+  "likes": 0
+}
+
+####
+GET http://localhost:3003/api/blogs
+
+###
+DELETE http://localhost:3003/api/blogs/690b665f9a04b8225d5be35c
+
+###
+PUT http://localhost:3003/api/blogs/690b68824c859ae22fc629c1
+Content-Type: application/json
+
+{
+  "title": "Arya y Tony",
+  "author": "Victor Salazar",
+  "url": "www.victor.com",
+  "likes": 0
+}
