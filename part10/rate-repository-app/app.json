@@ -4,6 +4,7 @@
     "slug": "rate-repository-app",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "myapp",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -24,6 +25,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
