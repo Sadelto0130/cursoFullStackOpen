@@ -3,6 +3,9 @@ import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'
 import FormikTextInput from './FormikTextInput';
+import { useSignIn } from '../hooks/useSignIn';
+import { setAccessToken } from '../utils/authStorage';
+import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,13 +40,22 @@ const validationSchema = yup.object().shape({
 })
 
 const SignIn = () => {
+  const [signIn] = useSignIn()
+  const router = useRouter()
 
-  const onSubmit = (values, { setFieldError }) => {
+  const onSubmit = async (values, { setFieldError }) => {
     let hasError = false;
+    const {username, password} = values;
 
     if (!hasError) {
-      console.log('Form values:', values);
-      Alert.alert('Login', `Usuario: ${values.username}`);
+      try{
+        const token = await signIn({username, password})
+        if(token) {
+          router.push('/')
+        }
+      } catch (e) {
+        console.log("error:", e)
+      }
     }
   };
 

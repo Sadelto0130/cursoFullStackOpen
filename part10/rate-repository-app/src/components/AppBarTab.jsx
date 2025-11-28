@@ -1,14 +1,13 @@
 import React from "react";
 import { Text, StyleSheet, Pressable } from "react-native";
-import { router } from "expo-router";
 
-const AppBarTab = ({ title, path }) => {
+const AppBarTab = ({ title, onPress }) => {
   return (
     <Pressable
-      onPress={() => router.push(path)}
+      onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        pressed ? styles.pressed : null, // efecto al presionar
+        pressed ? styles.pressed : null,
       ]}
     >
       <Text style={styles.text}>{title}</Text>
@@ -22,12 +21,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 6,
     borderRadius: 8,
-    backgroundColor: "#2f363d", // ligeramente más claro que el fondo
+    backgroundColor: "#2f363d", 
     justifyContent: "center",
     alignItems: "center",
   },
   pressed: {
-    opacity: 0.6, // feedback al presionar
+    opacity: 0.6, 
   },
   text: {
     color: "white",

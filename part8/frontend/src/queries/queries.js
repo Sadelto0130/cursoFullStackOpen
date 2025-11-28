@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import import gql from 'graphql-tag'; from "@apollo/client";
 
 const BOOK_DETAILS = gql`
   fragment BookDetails on Book {

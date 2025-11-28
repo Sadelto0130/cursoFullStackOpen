@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, StyleSheet, StatusBar, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useQuery } from '@apollo/client'
+import { useRouter } from 'expo-router'
 import AppBarTab from './AppBarTab'
+import { useSignOut } from '../hooks/useSignOut.js'
+import { ME_USER } from '../graphql/queries.js'
 
 const styles = StyleSheet.create({
   container: {
@@ -21,6 +25,16 @@ const styles = StyleSheet.create({
 })
 
 const AppBar = () => {
+  const { data, loading} = useQuery(ME_USER);
+  const signOut = useSignOut()
+  const router = useRouter()
+
+  const user = data?.me;
+
+  const handleSignOut = async() => {
+    await signOut()
+  }
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
@@ -29,8 +43,13 @@ const AppBar = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <AppBarTab title="Repositories" path="/repositories"/>
-          <AppBarTab title="Sign In" path="/signin"/>
+          <AppBarTab title="Repositories" onPress={()=>router.push("/repositories")}/>
+          {!loading && user ? (
+            <AppBarTab title="Sign Out" onPress={handleSignOut}/>
+            ) : (
+            <AppBarTab title="Sign In" onPress={()=>router.push("/signin")}/>
+            )
+          }
         </ScrollView>
       </View>
     </SafeAreaView>
