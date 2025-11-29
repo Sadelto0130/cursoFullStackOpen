@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text, StyleSheet, View, Image, Pressable } from 'react-native';
-import { router, useRouter } from 'expo-router';
+import { Text, StyleSheet, View, Image, Pressable, Button, Linking } from 'react-native';
+import { router, useLocalSearchParams, useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
   card: {
@@ -79,44 +79,55 @@ const formatNumber = (num) => {
   return String(num);
 };
 
-const RepositoryItem = ({item}) => {
+const RepositoryItem = ({item, showGitHubButton}) => {
+  const { id } = useLocalSearchParams();
+  
   return (
-    <Pressable onPress={() => router.push(`/repositories/${item.id}`)}>
-      <View style={styles.card}>
+    <View style={{paddingBottom: 10}}>
+      <Pressable onPress={() => router.push(`/repositories/${item.id}`)}>
+        <View style={styles.card}>
 
-        <View style={styles.topRow}>
-          <Image source={{uri: item.ownerAvatarUrl}} style={styles.avatar}/>
+          <View style={styles.topRow}>
+            <Image source={{uri: item.ownerAvatarUrl}} style={styles.avatar}/>
 
-          <View style={styles.info}>
-            <Text style={styles.name}>{item.fullName}</Text>
-            <Text style={styles.description}>{item.description}</Text>
-            <Text style={styles.languageTag}>{item.language}</Text>
+            <View style={styles.info}>
+              <Text style={styles.name}>{item.fullName}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.languageTag}>{item.language}</Text>
+            </View>
           </View>
+
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{formatNumber(item.stargazersCount)}</Text>
+              <Text style={styles.statLabel}>Stars</Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{formatNumber(item.forksCount)}</Text>
+              <Text style={styles.statLabel}>Forks</Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{formatNumber(item.reviewCount)}</Text>
+              <Text style={styles.statLabel}>Reviews</Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{formatNumber(item.ratingAverage)}</Text>
+              <Text style={styles.statLabel}>Rating</Text>
+            </View>
+          </View>
+
+          {showGitHubButton  && 
+            <Button 
+              title='Open in Github'
+              onPress={() => Linking.openURL(item.url)}
+            />
+          }
         </View>
-
-        <View style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{formatNumber(item.stargazersCount)}</Text>
-            <Text style={styles.statLabel}>Stars</Text>
-          </View>
-
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{formatNumber(item.forksCount)}</Text>
-            <Text style={styles.statLabel}>Forks</Text>
-          </View>
-
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{formatNumber(item.reviewCount)}</Text>
-            <Text style={styles.statLabel}>Reviews</Text>
-          </View>
-
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{formatNumber(item.ratingAverage)}</Text>
-            <Text style={styles.statLabel}>Rating</Text>
-          </View>
-        </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    </View>
   )
 }
 

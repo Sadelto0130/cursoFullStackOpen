@@ -1,7 +1,7 @@
-import SignIn from "../src/components/SignIn.jsx";
+import CreateReview from "../src/components/CreateReview.jsx";
 
 export default function SignInPage() {
-  return <SignIn />;
+  return <CreateReview />;
 }
 
 export const unstable_settings = {

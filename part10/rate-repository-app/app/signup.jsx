@@ -1,7 +1,7 @@
-import SignIn from "../src/components/SignIn.jsx";
+import SignUp from "../src/components/SignUp.jsx";
 
 export default function SignInPage() {
-  return <SignIn />;
+  return <SignUp />;
 }
 
 export const unstable_settings = {

@@ -30,8 +30,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 12,
     letterSpacing: 0.5,
   },
 });

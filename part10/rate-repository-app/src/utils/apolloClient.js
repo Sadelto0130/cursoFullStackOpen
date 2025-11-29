@@ -2,7 +2,13 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context"
 import { authStorage } from "./authStorage";
 
-const httpLink = new HttpLink({uri: process.env.EXPO_PUBLIC_URI_GRAPHQL })
+const httpLink = new HttpLink({
+  uri: process.env.EXPO_PUBLIC_URI_GRAPHQL,
+  headers: {
+    "apollo-require-preflight": "true",
+    "Content-Type": "application/json"
+  }
+})
 
 const authLink = setContext(async (_, {headers}) => {
   const token = await authStorage.getAccessToken()

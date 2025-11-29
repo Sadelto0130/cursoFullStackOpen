@@ -1,65 +1,41 @@
-import { FlatList, View, StyleSheet, Text } from "react-native";
+import { useCallback, useState } from "react";
+import { FlatList, View, Text, StyleSheet } from "react-native";
+import { useDebounce } from "use-debounce";
 import RepositoryItem from "./RepositoryItem";
 import { useRepositories } from "../hooks/useRepositories";
+import RepositoryListHeader from "./RepositoryListHeader";
 
 const styles = StyleSheet.create({
-  separator: {
-    height: 10,
-  },
-});
-
-/* const repositories = [
-  {
-    id: 'jaredpalmer.formik',
-    fullName: 'jaredpalmer/formik',
-    description: 'Build forms in React, without the tears',
-    language: 'TypeScript',
-    forksCount: 1589,
-    stargazersCount: 21553,
-    ratingAverage: 88,
-    reviewCount: 4,
-    ownerAvatarUrl: 'https://avatars2.githubusercontent.com/u/4060187?v=4',
-  },
-  {
-    id: 'rails.rails',
-    fullName: 'rails/rails',
-    description: 'Ruby on Rails',
-    language: 'Ruby',
-    forksCount: 18349,
-    stargazersCount: 45377,
-    ratingAverage: 100,
-    reviewCount: 2,
-    ownerAvatarUrl: 'https://avatars1.githubusercontent.com/u/4223?v=4',
-  },
-  {
-    id: 'django.django',
-    fullName: 'django/django',
-    description: 'The Web framework for perfectionists with deadlines.',
-    language: 'Python',
-    forksCount: 21015,
-    stargazersCount: 48496,
-    ratingAverage: 73,
-    reviewCount: 5,
-    ownerAvatarUrl: 'https://avatars2.githubusercontent.com/u/27804?v=4',
-  },
-  {
-    id: 'reduxjs.redux',
-    fullName: 'reduxjs/redux',
-    description: 'Predictable state container for JavaScript apps',
-    language: 'TypeScript',
-    forksCount: 13902,
-    stargazersCount: 52869,
-    ratingAverage: 0,
-    reviewCount: 0,
-    ownerAvatarUrl: 'https://avatars3.githubusercontent.com/u/13142323?v=4',
-  },
-]; */
+  separator: {height: 8}
+})
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
 export const RepositoryList = () => {
+  const[order, setOrder] = useState("LATEST")
+  const [menuVisible, setMenuVisible] = useState(false)
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
 
-  const { repositories, loading, error } = useRepositories();
+  const getOrderVariables = (order) => {
+    switch (order) {
+      case "HIGHEST_RATED":
+        return {orderBy: "RATING_AVERAGE", orderDirection: "DESC"};
+      case "LOWEST_RATED":
+        return {orderBy: "RATING_AVERAGE", orderDirection: "ASC"}
+      case "LATEST":
+      default:
+        return {orderBy: "CREATED_AT", orderDirection: "DESC"}    
+        break;
+    }
+  }
+
+  const variables = {
+    ...getOrderVariables(order),
+    searchKeyword: debouncedSearch
+  }
+
+  const { repositories, loading, error } = useRepositories(variables);
 
   if (loading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error: {error.message}</Text>
@@ -71,6 +47,16 @@ export const RepositoryList = () => {
       ItemSeparatorComponent={ItemSeparator}
       contentContainerStyle={{ padding: 16 }}
       renderItem={({item}) => <RepositoryItem item={item} />}
+      ListHeaderComponent={
+        <RepositoryListHeader
+          search={search}
+          setSearch={setSearch}
+          order={order}
+          setOrder={setOrder}
+          menuVisible={menuVisible}
+          setMenuVisible={setMenuVisible}
+        />
+      }
     />
   )
 }

@@ -33,6 +33,7 @@ const AppBar = () => {
 
   const handleSignOut = async() => {
     await signOut()
+    router.replace('/')
   }
 
   return (
@@ -45,9 +46,15 @@ const AppBar = () => {
         >
           <AppBarTab title="Repositories" onPress={()=>router.push("/repositories")}/>
           {!loading && user ? (
-            <AppBarTab title="Sign Out" onPress={handleSignOut}/>
+            <>
+              <AppBarTab title="Create Review" onPress={()=>router.push("/create_review")}/>
+              <AppBarTab title="Sign Out" onPress={handleSignOut}/>
+            </>
             ) : (
-            <AppBarTab title="Sign In" onPress={()=>router.push("/signin")}/>
+              <>
+                <AppBarTab title="Sign In" onPress={()=>router.push("/signin")}/>
+                <AppBarTab title="Sign up" onPress={()=>router.push("/signup")}/>
+              </>
             )
           }
         </ScrollView>

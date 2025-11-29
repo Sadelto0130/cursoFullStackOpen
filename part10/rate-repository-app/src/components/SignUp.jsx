@@ -3,8 +3,7 @@ import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'
 import FormikTextInput from './FormikTextInput';
-import { useSignIn } from '../hooks/useSignIn';
-import { setAccessToken } from '../utils/authStorage';
+import { createUser } from '../hooks/useCreateUser';
 import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const initialValues = { username: '', password: '' };
+const initialValues = { username: '', password: '', passwordConfirm: '' };
 
 const validationSchema = yup.object().shape({
   username: yup.string().required('Username is required'),
@@ -37,10 +36,14 @@ const validationSchema = yup.object().shape({
     .string()
     .min(8, 'Password must be at least 8 characters')
     .required('Password is required'),
+  passwordConfirm: yup 
+    .string()
+    .oneOf([yup.ref('password')], 'Password must match')
+    .required('Please confirm your password')
 })
 
-const SignIn = () => {
-  const [signIn] = useSignIn()
+const SignUp = () => {
+  const [create_user] = createUser()
   const router = useRouter()
 
   const onSubmit = async (values, { setFieldError }) => {
@@ -49,9 +52,9 @@ const SignIn = () => {
 
     if (!hasError) {
       try{
-        const token = await signIn({username, password})
+        const token = await create_user({username, password})
         if(token) {
-          router.push('/')
+          router.push('/signin')
         }
       } catch (e) {
         console.log("error:", e)
@@ -71,9 +74,10 @@ const SignIn = () => {
 
           <FormikTextInput name="username" placeholder="Username" />
           <FormikTextInput name="password" placeholder="Password" secureTextEntry />
+          <FormikTextInput name="passwordConfirm" placeholder="Password confirmation" secureTextEntry />
 
           <Pressable style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Sign up</Text>
           </Pressable>
         </View>
       )}
@@ -81,4 +85,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
